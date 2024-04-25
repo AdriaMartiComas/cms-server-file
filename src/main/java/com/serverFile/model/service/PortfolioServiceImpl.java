@@ -1,9 +1,10 @@
 package com.serverFile.model.service;
 
 import com.serverFile.model.domain.*;
+import com.serverFile.model.dto.InfoDto;
 import com.serverFile.model.repository.PortfolioRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,16 +41,16 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio updatePortfolioInfo(String portfolioName, Portfolio portfolio) {
-        Portfolio existingPortfolio = getExistingPortfolio(portfolioName);
+    public Portfolio updatePortfolioInfo(String existingPortfolioName, InfoDto infoDto) {
+        Portfolio existingPortfolio = getExistingPortfolio(existingPortfolioName);
 
-        if (!Objects.equals(portfolio.getPortfolioName(), "")){
-            existingPortfolio.setPortfolioName(portfolio.getPortfolioName());
+        if (!Objects.equals(infoDto.getPortfolioName(), "")){
+            existingPortfolio.setPortfolioName(infoDto.getPortfolioName());
         }
-        if (!Objects.equals(portfolio.getEmail(), "")){
-            existingPortfolio.setEmail(portfolio.getEmail());
+        if (!Objects.equals(infoDto.getEmail(), "")){
+            existingPortfolio.setEmail(infoDto.getEmail());
         }
-        return portfolioRepository.save(portfolio);
+        return portfolioRepository.save(existingPortfolio);
     }
 
     @Override
@@ -65,12 +66,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (!Objects.equals(title.getImage(), "")){
             existingPortfolio.getTitle().setImage(title.getImage());
         }
-        if (!title.getIconImg().isEmpty()){
-            existingPortfolio.getTitle().getIconImg().addAll(title.getIconImg());
-        }
-        if (!title.getIconLink().isEmpty()){
-            existingPortfolio.getTitle().getIconLink().addAll(title.getIconLink());
-        }
+
 
         return portfolioRepository.save(existingPortfolio);
     }
@@ -87,7 +83,14 @@ public class PortfolioServiceImpl implements PortfolioService {
     public Project addProject(String portfolioName, Project project) {
         Portfolio existingPortfolio = getExistingPortfolio(portfolioName);
 
-        existingPortfolio.getProjects().add(project);
+        Project newProject = new Project();
+        newProject.setProjectName(project.getProjectName());
+        newProject.setProjSubtitle(project.getProjSubtitle());
+        newProject.setProjDescription(project.getProjDescription());
+        newProject.setProjImages(project.getProjImages());
+
+        existingPortfolio.getProjects().add(newProject);
+
         return portfolioRepository.save(existingPortfolio).getProjects().get(existingPortfolio.getProjects().size()-1);
     }
 
@@ -99,18 +102,12 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .filter(p -> p.getId().equals(project.getId()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Project not found"));
-        if (!Objects.equals(project.getTitle(), "")){
-            existingProject.setTitle(project.getTitle());
-        }
-        if (!Objects.equals(project.getSubtitle(), "")){
-            existingProject.setSubtitle(project.getSubtitle());
-        }
-        if (!Objects.equals(project.getDescription(), "")){
-            existingProject.setDescription(project.getDescription());
-        }
-        if (!project.getImages().isEmpty()){
-            existingProject.getImages().addAll(project.getImages());
-        }
+
+        existingProject.setProjectName(project.getProjectName());
+        existingProject.setProjSubtitle(project.getProjSubtitle());
+        existingProject.setProjDescription(project.getProjDescription());
+        existingProject.getProjImages().addAll(project.getProjImages());
+
         return portfolioRepository.save(existingPortfolio).getProjects().stream()
                 .filter(p -> p.getId().equals(project.getId()))
                 .findFirst()
@@ -120,7 +117,16 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public void deleteProject(String portfolioName, String id) {
         Portfolio existingPortfolio = getExistingPortfolio(portfolioName);
-        existingPortfolio.getProjects().removeIf(project -> project.getId().equals(id));
+
+        boolean removed = existingPortfolio
+                .getProjects().
+                removeIf(project -> {
+                    return project.getId().toString().equals(id);
+                });
+        if (!removed){
+            throw new RuntimeException("Project not found");
+        }
+
         portfolioRepository.save(existingPortfolio);
     }
 

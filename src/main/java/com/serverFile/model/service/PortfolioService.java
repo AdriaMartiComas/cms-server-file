@@ -4,6 +4,7 @@ import com.serverFile.model.domain.Portfolio;
 import com.serverFile.model.domain.Project;
 import com.serverFile.model.domain.Tag;
 import com.serverFile.model.domain.Title;
+import com.serverFile.model.dto.InfoDto;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface PortfolioService {
     Portfolio addPortfolio(Portfolio portfolio);
 
     //Only owner of the Portfolio can update it
-    Portfolio updatePortfolioInfo(String portfolioName, Portfolio portfolio);
+    Portfolio updatePortfolioInfo(String portfolioName, InfoDto infoDto);
     Portfolio updatePortfolioTitle(String portfolioName, Title title);
     Portfolio updatePortfolioAbout(String portfolioName, String about);
     Project addProject(String portfolioName, Project project);

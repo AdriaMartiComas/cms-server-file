@@ -2,7 +2,9 @@ package com.serverFile.controller;
 
 import com.serverFile.model.domain.Portfolio;
 import com.serverFile.model.domain.Project;
+import com.serverFile.model.domain.Tag;
 import com.serverFile.model.domain.Title;
+import com.serverFile.model.dto.InfoDto;
 import com.serverFile.model.service.PortfolioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,16 +43,18 @@ public class PortfolioController {
 
     //Only admin methods
     //CREATE PORTFOLIO
-    @PostMapping("/addPortfolio")
-    public ResponseEntity<Portfolio> addPortfolio(@RequestBody Portfolio portfolio) {
+    @PostMapping("/addPortfolio/{portfolioName}/{owner}")
+    public ResponseEntity<Portfolio> addPortfolio(@PathVariable String portfolioName, @PathVariable String owner) {
+        Portfolio portfolio = new Portfolio(owner);
+        portfolio.setPortfolioName(portfolioName);
         return ResponseEntity.ok(portfolioService.addPortfolio(portfolio));
     }
 
     //User methods
     //UPDATE PORTFOLIO INFO
-    @PutMapping("/{portfolioName}")
-    public ResponseEntity<Portfolio> updatePortfolioInfo(@PathVariable String portfolioName, @RequestBody Portfolio portfolio) {
-        return ResponseEntity.ok(portfolioService.updatePortfolioInfo(portfolioName, portfolio));
+    @PutMapping("/{portfolioName}/updateInfo")
+    public ResponseEntity<Portfolio> updatePortfolioInfo(@PathVariable String portfolioName, @RequestBody InfoDto infoDto) {
+        return ResponseEntity.ok(portfolioService.updatePortfolioInfo(portfolioName, infoDto));
     }
 
     //UPDATE PORTFOLIO TITLE
@@ -86,21 +90,21 @@ public class PortfolioController {
 
     //ADD TAG
     @PostMapping("/{portfolioName}/addTag")
-    public ResponseEntity<Project> addTag(@PathVariable String portfolioName, @RequestBody Project project) {
-        return ResponseEntity.ok(portfolioService.addTag(portfolioName, project));
+    public ResponseEntity<Tag> addTag(@PathVariable String portfolioName, @RequestBody Tag tag) {
+        return ResponseEntity.ok(portfolioService.addTag(portfolioName, tag));
     }
 
     //UPDATE TAG
     @PutMapping("/{portfolioName}/updateTag")
-    public ResponseEntity<Project> updateTag(@PathVariable String portfolioName, @RequestBody Project project) {
-        return ResponseEntity.ok(portfolioService.updateTag(portfolioName, project));
+    public ResponseEntity<Tag> updateTag(@PathVariable String portfolioName, @RequestBody Tag tag) {
+        return ResponseEntity.ok(portfolioService.updateTag(portfolioName, tag));
     }
 
     //DELETE TAG
     @DeleteMapping("/{portfolioName}/deleteTag/{id}")
     public ResponseEntity<Void> deleteTag(@PathVariable String portfolioName, @PathVariable String id) {
         portfolioService.deleteTag(portfolioName, id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(204).build();
     }
 
 }

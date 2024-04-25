@@ -3,7 +3,9 @@ package com.serverFile.model.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -15,9 +17,10 @@ public class Portfolio {
 
     @Id
     @Setter(AccessLevel.NONE)
-    private String id;
+    private ObjectId id;
     @Setter(AccessLevel.NONE)
     private String owner;
+    @Indexed(unique = true)
     private String portfolioName;
     private Title title;
     private String about;
