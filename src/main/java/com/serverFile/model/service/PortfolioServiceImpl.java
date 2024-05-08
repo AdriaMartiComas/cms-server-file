@@ -136,6 +136,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     public Tag addTag(String portfolioName, Tag tag) {
         Portfolio existingPortfolio = getExistingPortfolio(portfolioName);
 
+        //Check if tag already exists
+        if (existingPortfolio.getTags().stream().anyMatch(t -> t.getName().equals(tag.getName()))){
+            throw new RuntimeException("Tag already exists");
+        }
+
         existingPortfolio.getTags().add(tag);
         return portfolioRepository.save(existingPortfolio).getTags().get(existingPortfolio.getTags().size()-1);
     }

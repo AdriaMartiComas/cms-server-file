@@ -34,9 +34,9 @@ public class PortfolioController {
     }
 
     //GET PROJECT
-    @GetMapping("/{portfolioName}/projects/{id}")
-    public ResponseEntity<Project> getProject(@PathVariable String portfolioName, @PathVariable String id) {
-        return ResponseEntity.ok(portfolioService.getProject(portfolioName, id));
+    @GetMapping("/{portfolioName}/projects/{projectIid}")
+    public ResponseEntity<Project> getProject(@PathVariable String portfolioName, @PathVariable String projectId) {
+        return ResponseEntity.ok(portfolioService.getProject(portfolioName, projectId));
     }
 
     //TODO: Add security layer to the following methods
@@ -58,13 +58,13 @@ public class PortfolioController {
     }
 
     //UPDATE PORTFOLIO TITLE
-    @PutMapping("/{portfolioName}/title")
+    @PutMapping("/{portfolioName}/updateTitle")
     public ResponseEntity<Portfolio> updatePortfolioTitle(@PathVariable String portfolioName, @RequestBody Title title) {
         return ResponseEntity.ok(portfolioService.updatePortfolioTitle(portfolioName, title));
     }
 
     //UPDATE PORTFOLIO ABOUT
-    @PutMapping("/{portfolioName}/about")
+    @PutMapping("/{portfolioName}/updateAbout")
     public ResponseEntity<Portfolio> updatePortfolioAbout(@PathVariable String portfolioName, @RequestBody String about) {
         return ResponseEntity.ok(portfolioService.updatePortfolioAbout(portfolioName, about));
     }
@@ -82,9 +82,9 @@ public class PortfolioController {
     }
 
     //DELETE PROJECT
-    @DeleteMapping("/{portfolioName}/deleteProject/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable String portfolioName, @PathVariable String id) {
-        portfolioService.deleteProject(portfolioName, id);
+    @DeleteMapping("/{portfolioName}/deleteProject/{projectId}")
+    public ResponseEntity<Void> deleteProject(@PathVariable String portfolioName, @PathVariable String projectId) {
+        portfolioService.deleteProject(portfolioName, projectId);
         return ResponseEntity.noContent().build();
     }
 
@@ -101,9 +101,9 @@ public class PortfolioController {
     }
 
     //DELETE TAG
-    @DeleteMapping("/{portfolioName}/deleteTag/{id}")
-    public ResponseEntity<Void> deleteTag(@PathVariable String portfolioName, @PathVariable String id) {
-        portfolioService.deleteTag(portfolioName, id);
+    @DeleteMapping("/{portfolioName}/deleteTag/{tagId}")
+    public ResponseEntity<Void> deleteTag(@PathVariable String portfolioName, @PathVariable String tagId) {
+        portfolioService.deleteTag(portfolioName, tagId);
         return ResponseEntity.status(204).build();
     }
 
