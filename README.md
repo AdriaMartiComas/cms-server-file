@@ -2,6 +2,12 @@
 
 # CMS Server File
 
+**Warning: This project is in its initial development phase.**
+Expect changes and evolving features. Contributions are welcome, but please understand that the 
+project is under active development.
+
+## Description:
+
 This app is a server for a content management system. 
 It is a RESTful API that allows users to create, read, update, and delete content. 
 The content is stored in a MongoDB database and can be accessed by users with the appropriate permissions.
