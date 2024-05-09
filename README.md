@@ -17,6 +17,12 @@ In the future it may also be used to store content for other types of websites.
 
 The implementation of JWT authentication has to be done in the future.
 
+## MongoDB installation:
+
+MongoDB is the database used in this project. It's recommended to use **Mongo DB Compass** to manage the database.
+This ServerFileApplication will connect to a local MongoDB database named "serverFileDB" that has to be created manually using compass.
+Port, username, and password are set in **application.properties** and will be changed before deployment.
+
 ## Endpoints:
 ### Public Endpoints:
 - Get one content: /api/portfolio/{portfolioName}
