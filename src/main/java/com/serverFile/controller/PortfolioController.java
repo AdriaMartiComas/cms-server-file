@@ -1,11 +1,11 @@
 package com.serverFile.controller;
 
-import com.serverFile.model.domain.Portfolio;
-import com.serverFile.model.domain.Project;
-import com.serverFile.model.domain.Tag;
-import com.serverFile.model.domain.Title;
-import com.serverFile.model.dto.InfoDto;
-import com.serverFile.model.service.PortfolioServiceImpl;
+import com.serverFile.domain.Portfolio;
+import com.serverFile.domain.Project;
+import com.serverFile.domain.Tag;
+import com.serverFile.domain.Title;
+import com.serverFile.dto.InfoDto;
+import com.serverFile.service.PortfolioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -96,12 +96,6 @@ public class PortfolioController {
     @PostMapping("/{portfolioName}/addTag")
     public ResponseEntity<Tag> addTag(@PathVariable String portfolioName, @RequestBody Tag tag) {
         return ResponseEntity.ok(portfolioService.addTag(portfolioName, tag));
-    }
-
-    //UPDATE TAG
-    @PutMapping("/{portfolioName}/updateTag")
-    public ResponseEntity<Tag> updateTag(@PathVariable String portfolioName, @RequestBody Tag tag) {
-        return ResponseEntity.ok(portfolioService.updateTag(portfolioName, tag));
     }
 
     //DELETE TAG

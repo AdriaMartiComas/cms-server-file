@@ -1,4 +1,4 @@
-package com.serverFile.model.dto;
+package com.serverFile.dto;
 
 import lombok.Getter;
 import lombok.Setter;

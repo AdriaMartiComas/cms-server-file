@@ -1,11 +1,15 @@
-package com.serverFile.model.service;
+package com.serverFile.service;
 
-import com.serverFile.model.domain.*;
-import com.serverFile.model.dto.InfoDto;
-import com.serverFile.model.repository.PortfolioRepository;
-import org.bson.types.ObjectId;
+import com.serverFile.domain.Portfolio;
+import com.serverFile.domain.Project;
+import com.serverFile.domain.Tag;
+import com.serverFile.domain.Title;
+import com.serverFile.dto.InfoDto;
+import com.serverFile.exception.EntityAlreadyExistsException;
+import com.serverFile.repository.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import javax.persistence.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,12 +44,19 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public Portfolio addPortfolio(Portfolio portfolio) {
+        if (portfolioRepository.findByPortfolioName(portfolio.getPortfolioName()) != null){
+            throw new EntityAlreadyExistsException("Portfolio already exists");
+        }
+
         return portfolioRepository.save(portfolio);
     }
 
     @Override
     public Portfolio updatePortfolioInfo(String existingPortfolioName, InfoDto infoDto) {
         Portfolio existingPortfolio = getExistingPortfolio(existingPortfolioName);
+        if (portfolioRepository.findByPortfolioName(infoDto.getPortfolioName()) != null){
+            throw new EntityAlreadyExistsException("Portfolio name already exists");
+        }
 
         if (!Objects.equals(infoDto.getPortfolioName(), "")){
             existingPortfolio.setPortfolioName(infoDto.getPortfolioName());
@@ -86,6 +97,10 @@ public class PortfolioServiceImpl implements PortfolioService {
     public Project addProject(String portfolioName, Project project) {
         Portfolio existingPortfolio = getExistingPortfolio(portfolioName);
 
+        if (existingPortfolio.getProjects().stream().anyMatch(p -> p.getProjectName().equals(project.getProjectName()))){
+            throw new EntityAlreadyExistsException("Project already exists");
+        }
+
         Project newProject = new Project();
         newProject.setProjectName(project.getProjectName());
         newProject.setProjSubtitle(project.getProjSubtitle());
@@ -104,7 +119,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         Project existingProject = existingPortfolio.getProjects().stream()
                 .filter(p -> p.getId().equals(project.getId()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Project not found"));
 
         existingProject.setProjectName(project.getProjectName());
         existingProject.setProjSubtitle(project.getProjSubtitle());
@@ -114,7 +129,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         return portfolioRepository.save(existingPortfolio).getProjects().stream()
                 .filter(p -> p.getId().equals(project.getId()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Project not found"));
     }
 
     @Override
@@ -127,13 +142,11 @@ public class PortfolioServiceImpl implements PortfolioService {
                     return project.getId().toString().equals(id);
                 });
         if (!removed){
-            throw new RuntimeException("Project not found");
+            throw new EntityNotFoundException("Project not found");
         }
 
         portfolioRepository.save(existingPortfolio);
     }
-
-
 
     @Override
     public Tag addTag(String portfolioName, Tag tag) {
@@ -141,7 +154,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         //Check if tag already exists
         if (existingPortfolio.getTags().stream().anyMatch(t -> t.getName().equals(tag.getName()))){
-            throw new RuntimeException("Tag already exists");
+            throw new EntityAlreadyExistsException("Tag already exists");
         }
 
         existingPortfolio.getTags().add(tag);
@@ -149,25 +162,18 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Tag updateTag(String portfolioName, Tag tag) {
-        Portfolio existingPortfolio = getExistingPortfolio(portfolioName);
-        Tag existingTags = existingPortfolio.getTags().stream()
-                .filter(t -> t.getId().equals(tag.getId()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
-        if (!Objects.equals(tag.getName(), "")){
-            existingTags.setName(tag.getName());
-        }
-        return portfolioRepository.save(existingPortfolio).getTags().stream()
-                .filter(t -> t.getId().equals(tag.getId()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
-    }
-
-    @Override
     public void deleteTag(String portfolioName, String id) {
         Portfolio existingPortfolio = getExistingPortfolio(portfolioName);
-        existingPortfolio.getTags().removeIf(tag -> tag.getId().equals(id));
+
+        boolean removed = existingPortfolio
+                .getTags().
+                removeIf(tag -> {
+                    return tag.getId().toString().equals(id);
+                });
+        if (!removed){
+            throw new EntityNotFoundException("Tag not found");
+        }
+
         portfolioRepository.save(existingPortfolio);
     }
 
@@ -175,7 +181,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     private Portfolio getExistingPortfolio(String portfolioName) {
         Portfolio existingPortfolio = portfolioRepository.findByPortfolioName(portfolioName);
         if (existingPortfolio == null) {
-            throw new RuntimeException("Portfolio not found");
+            throw new EntityNotFoundException("Portfolio not found");
         }
         return existingPortfolio;
     }

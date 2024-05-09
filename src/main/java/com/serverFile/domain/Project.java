@@ -1,9 +1,9 @@
-package com.serverFile.model.domain;
+package com.serverFile.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.serverFile.model.util.ObjectIdDeserializer;
+import com.serverFile.util.ObjectIdDeserializer;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

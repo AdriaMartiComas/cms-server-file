@@ -1,4 +1,4 @@
-package com.serverFile.model.domain;
+package com.serverFile.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;

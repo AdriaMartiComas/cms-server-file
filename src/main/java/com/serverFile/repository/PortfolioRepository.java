@@ -1,6 +1,6 @@
-package com.serverFile.model.repository;
+package com.serverFile.repository;
 
-import com.serverFile.model.domain.Portfolio;
+import com.serverFile.domain.Portfolio;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

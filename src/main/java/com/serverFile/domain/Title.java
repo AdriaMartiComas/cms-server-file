@@ -1,4 +1,4 @@
-package com.serverFile.model.domain;
+package com.serverFile.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

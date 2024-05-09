@@ -1,10 +1,10 @@
-package com.serverFile.model.service;
+package com.serverFile.service;
 
-import com.serverFile.model.domain.Portfolio;
-import com.serverFile.model.domain.Project;
-import com.serverFile.model.domain.Tag;
-import com.serverFile.model.domain.Title;
-import com.serverFile.model.dto.InfoDto;
+import com.serverFile.domain.Tag;
+import com.serverFile.domain.Title;
+import com.serverFile.domain.Portfolio;
+import com.serverFile.domain.Project;
+import com.serverFile.dto.InfoDto;
 
 import java.util.List;
 
@@ -26,6 +26,5 @@ public interface PortfolioService {
     Project updateProject(String portfolioName, Project project);
     void deleteProject(String portfolioName, String id);
     Tag addTag(String portfolioName, Tag tag);
-    Tag updateTag(String portfolioName, Tag tag);
     void deleteTag(String portfolioName, String id);
 }
