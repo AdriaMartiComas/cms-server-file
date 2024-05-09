@@ -13,8 +13,11 @@ import java.util.Objects;
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
 
+    private final PortfolioRepository portfolioRepository;
     @Autowired
-    private PortfolioRepository portfolioRepository;
+    public PortfolioServiceImpl(PortfolioRepository portfolioRepository) {
+        this.portfolioRepository = portfolioRepository;
+    }
 
     public Portfolio getPortfolio(String portfolioName) {
 

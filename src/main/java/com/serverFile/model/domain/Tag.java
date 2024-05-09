@@ -25,6 +25,6 @@ public class Tag {
 
     public Tag() {
         this.id = new ObjectId();
-        this.name = name;
+        this.name = "";
     }
 }

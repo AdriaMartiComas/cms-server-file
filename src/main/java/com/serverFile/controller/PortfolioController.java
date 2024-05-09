@@ -16,8 +16,12 @@ import java.util.List;
 @RequestMapping("/api/portfolio")
 public class PortfolioController {
 
+    private final PortfolioServiceImpl portfolioService;
+
     @Autowired
-    private PortfolioServiceImpl portfolioService;
+    public PortfolioController(PortfolioServiceImpl portfolioService) {
+        this.portfolioService = portfolioService;
+    }
 
     //Public methods
 
