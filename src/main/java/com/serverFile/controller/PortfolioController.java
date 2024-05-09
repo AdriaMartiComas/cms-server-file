@@ -34,7 +34,7 @@ public class PortfolioController {
     }
 
     //GET PROJECT
-    @GetMapping("/{portfolioName}/projects/{projectIid}")
+    @GetMapping("/{portfolioName}/projects/{projectId}")
     public ResponseEntity<Project> getProject(@PathVariable String portfolioName, @PathVariable String projectId) {
         return ResponseEntity.ok(portfolioService.getProject(portfolioName, projectId));
     }
