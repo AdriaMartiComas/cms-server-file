@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -91,8 +91,6 @@ public class PortfolioControllerTest {
     @Test
     void getProject() throws Exception {
         String portfolioName = "portfolioName";
-        ObjectId projectId = new ObjectId();
-        String projectIdString = projectId.toString();
 
         Project project = new Project();
         project.setProjectName("Project 1");
@@ -100,15 +98,36 @@ public class PortfolioControllerTest {
         project.setProjDescription("Description 1");
         project.setProjImages(List.of("image1.jpg", "image2.jpg"));
 
-        Mockito.when(portfolioServiceImpl.getProject(portfolioName, projectIdString)).thenReturn(project);
+        Mockito.when(portfolioServiceImpl.getProject(portfolioName, project.getId().toString())).thenReturn(project);
 
-        mockMvc.perform(get("/api/portfolio/" + portfolioName + "/projects/" + projectId)
+        mockMvc.perform(get("/api/portfolio/" + portfolioName + "/projects/" + project.getId().toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.projectName", is(project.getProjectName())))
-                .andExpect(jsonPath("$.projSubtitle", is(project.getProjSubtitle())))
-                .andExpect(jsonPath("$.projDescription", is(project.getProjDescription())))
-                .andExpect(jsonPath("$.projImages[1]", is(project.getProjImages().get(1))));
+                .andExpect(jsonPath("$.projectName", is("Project 1")))
+                .andExpect(jsonPath("$.projSubtitle", is("Subtitle 1")))
+                .andExpect(jsonPath("$.projDescription", is("Description 1")))
+                .andExpect(jsonPath("$.projImages", is(List.of("image1.jpg", "image2.jpg"))));
+    }
+
+    @Test
+    void getProjectNotFound() throws Exception {
+        String portfolioName = "portfolioName";
+        ObjectId projectId = new ObjectId();
+        String projectIdString = projectId.toString();
+
+       /* Project project = new Project();
+        project.setProjectName("Project 1");
+        project.setProjSubtitle("Subtitle 1");
+        project.setProjDescription("Description 1");
+        project.setProjImages(List.of("image1.jpg", "image2.jpg"));*/
+
+        Mockito.when(portfolioServiceImpl.getProject(portfolioName, projectIdString))
+                .thenThrow(new RuntimeException("Project not found"));
+
+
+        mockMvc.perform(get("/api/portfolio/" + portfolioName + "/projects/" + projectId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
 
