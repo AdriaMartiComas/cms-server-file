@@ -7,6 +7,7 @@ import com.serverFile.domain.Title;
 import com.serverFile.dto.InfoDto;
 import com.serverFile.service.PortfolioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,11 @@ public class PortfolioController {
     //GET PROJECT
     @GetMapping("/{portfolioName}/projects/{projectId}")
     public ResponseEntity<Project> getProject(@PathVariable String portfolioName, @PathVariable String projectId) {
-        return ResponseEntity.ok(portfolioService.getProject(portfolioName, projectId));
+        try {
+            return ResponseEntity.ok(portfolioService.getProject(portfolioName, projectId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     //TODO: Add security layer to the following methods

@@ -37,7 +37,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     public Project getProject(String portfolioName, String id) {
 
         return getExistingPortfolio(portfolioName).getProjects().stream()
-                .filter(project -> project.getId().equals(id))
+                .filter(project -> project.getId().toString().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Project not found"));
     }
